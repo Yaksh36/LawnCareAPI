@@ -3,6 +3,7 @@ package patel.yaksh.lawn.Model;
 import com.sun.istack.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,7 +15,7 @@ import java.sql.Time;
 @Entity
 @Data
 @NoArgsConstructor
-public class Service {
+public class ServiceRequest extends RepresentationModel<ServiceRequest> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id;
@@ -24,16 +25,13 @@ public class Service {
     public Date date;
     @NotNull
     public Time time;
-    public boolean isAccepted;
-    public int providerId;
-    public boolean isCompleted;
+    public boolean isAccepted = false;
+    public int providerId = -1;
+    public boolean isCompleted = false;
 
-    public Service(int requesterId, Date date, Time time, boolean isAccepted, int providerId, boolean isCompleted) {
+    public ServiceRequest(int requesterId, Date date, Time time) {
         this.requesterId = requesterId;
         this.date = date;
         this.time = time;
-        this.isAccepted = isAccepted;
-        this.providerId = providerId;
-        this.isCompleted = isCompleted;
     }
 }

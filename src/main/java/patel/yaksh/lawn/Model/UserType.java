@@ -1,7 +1,7 @@
 package patel.yaksh.lawn.Model;
 
 public enum UserType {
-    CONSUMER,
+    HOME_OWNER,
     CONTRACTOR,
     ADMIN
 }

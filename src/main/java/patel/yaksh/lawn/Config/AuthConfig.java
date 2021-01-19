@@ -3,6 +3,7 @@ package patel.yaksh.lawn.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,8 +26,8 @@ public class AuthConfig  extends WebSecurityConfigurerAdapter {
 
 //    @PostConstruct
 //    public void init(){
-//        userRepository.save(new User("Admin Userz", "admin",PasswordEncoder().encode("testtest1")
-//                , "Yes the address", UserType.ADMIN,"ADMIN" ));
+//        userRepository.save(new User("Admin User", "admin@gmail.com",PasswordEncoder().encode("admin")
+//                , "123 Main St", "Salt Lake City","Utah", "84111", UserType.ADMIN,"ADMIN" ));
 //    }
 
     @Bean
@@ -48,12 +49,20 @@ public class AuthConfig  extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/api/user/").permitAll()
+                .antMatchers(HttpMethod.PUT,"/api/service/**").hasAnyAuthority(UserType.CONTRACTOR.toString())
                 .anyRequest()
                 .authenticated()
                 .and()
                 .httpBasic();
     }
 
+//        .antMatchers("/marvel/auth").authenticated()
+//                .antMatchers(HttpMethod.POST,"/**").hasAnyAuthority("USER","ADMIN")
+//                .antMatchers(HttpMethod.PUT,"/**").hasAnyAuthority("USER","ADMIN")
+//                .antMatchers(HttpMethod.DELETE,"/**").hasAnyAuthority("USER","ADMIN")
+//                .antMatchers("/user/**").hasAuthority("ADMIN")
+//                .antMatchers(HttpMethod.GET).permitAll()
 
 
 }
