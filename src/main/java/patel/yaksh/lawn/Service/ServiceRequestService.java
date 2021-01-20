@@ -2,6 +2,7 @@ package patel.yaksh.lawn.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import patel.yaksh.lawn.Model.ServiceNotFoundException;
 import patel.yaksh.lawn.Model.ServiceRequest;
 import patel.yaksh.lawn.Repositories.ServiceRepository;
 
@@ -39,6 +40,8 @@ public class ServiceRequestService {
         if (serviceRequest != null){
             serviceRequest.setCompleted(true);
             repository.save(serviceRequest);
+        }else {
+            throw new ServiceNotFoundException();
         }
     }
 
@@ -48,6 +51,8 @@ public class ServiceRequestService {
             serviceRequest.setAccepted(true);
             serviceRequest.setProviderId(providerId);
             repository.save(serviceRequest);
+        }else {
+            throw new ServiceNotFoundException();
         }
     }
 

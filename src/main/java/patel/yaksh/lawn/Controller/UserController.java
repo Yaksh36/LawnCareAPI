@@ -8,6 +8,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import patel.yaksh.lawn.Model.User;
+import patel.yaksh.lawn.Model.UserNotFoundException;
 import patel.yaksh.lawn.Repositories.UserRepository;
 import patel.yaksh.lawn.Service.UserService;
 
@@ -42,13 +43,21 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     private User findById(@PathVariable int id){
-        return userService.findById(id);
+        User user = userService.findById(id);
+        if (user != null){
+            return user;
+        }else {
+            throw new UserNotFoundException();
+        }
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/{id}")
     private void partialUpdate(@RequestBody User user,@PathVariable int id){
-        userService.patch(user,id);
+        User result = userService.patch(user,id);
+        if (result == null){
+            throw new UserNotFoundException();
+        }
     }
 
     @PostMapping("/forgotPassword")

@@ -37,7 +37,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void patch(User user, int id){
+    public User patch(User user, int id){
        User temp =  userRepository.findById(id).orElse(null);
        if (temp != null){
 
@@ -67,6 +67,8 @@ public class UserService {
 
            userRepository.save(temp);
        }
+
+       return temp;
     }
 
 

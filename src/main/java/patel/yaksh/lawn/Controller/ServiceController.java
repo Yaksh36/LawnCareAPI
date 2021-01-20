@@ -6,6 +6,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import patel.yaksh.lawn.Model.ServiceNotFoundException;
 import patel.yaksh.lawn.Model.ServiceRequest;
 import patel.yaksh.lawn.Service.ServiceRequestService;
 
@@ -31,10 +32,13 @@ public class ServiceController {
     @GetMapping("/{id}")
     public ServiceRequest findById(@PathVariable int id){
         ServiceRequest s = service.findById(id).orElse(null);
-        assert s != null;
-        s.add(linkTo(methodOn(ServiceController.class).findById(id)).withSelfRel());
-        s.add(linkTo(methodOn(ServiceController.class).findAllOpenRequests("","","")).withRel("allOpenRequests"));
-        return s;
+        if (s!=null) {
+            s.add(linkTo(methodOn(ServiceController.class).findById(id)).withSelfRel());
+            s.add(linkTo(methodOn(ServiceController.class).findAllOpenRequests("", "", "")).withRel("allOpenRequests"));
+            return s;
+        }else {
+            throw new ServiceNotFoundException();
+        }
     }
 
     @ResponseStatus(HttpStatus.OK)
