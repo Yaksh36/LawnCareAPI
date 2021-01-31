@@ -24,7 +24,7 @@ public class ServiceRequestService {
     }
 
     public List<ServiceRequest> getOpenRequests(){
-        return repository.findAllByisAcceptedIsFalse();
+        return repository.findAllByAcceptedIsFalseAndCompletedIsFalse();
     }
 
     public List<ServiceRequest> getOpenRequestsByPostal(String postal){

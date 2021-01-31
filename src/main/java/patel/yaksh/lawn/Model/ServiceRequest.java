@@ -5,10 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
 
@@ -25,9 +22,10 @@ public class ServiceRequest extends RepresentationModel<ServiceRequest> {
     public Date date;
     @NotNull
     public Time time;
-    public boolean isAccepted = false;
+    //@Column(name = "is_accepted")
+    public boolean accepted = false;
     public int providerId = -1;
-    public boolean isCompleted = false;
+    public boolean completed = false;
 
     public ServiceRequest(int requesterId, Date date, Time time) {
         this.requesterId = requesterId;

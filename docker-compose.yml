@@ -1,0 +1,45 @@
+version: '3.7'
+
+
+services:
+
+  app-server:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # Forward the exposed port 8080 on the container to port 8080 on the host machine
+    restart: always
+    depends_on:
+      - db
+#    environment: # Pass environment variables to the service
+#      SPRING_DATASOURCE_URL: "jdbc:mysql://db:4002/lawn_care?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true"
+#      SPRING_DATASOURCE_USERNAME: "root"
+#      SPRING_DATASOURCE_PASSWORD: "root"
+    networks: # Networks to join (Services on the same network can communicate with each other using their name)
+      - backend
+
+  # Database Service (Mysql)
+  db:
+    container_name: db
+    image: mysql:latest
+    ports:
+      - "4002:3306"
+    restart: always
+    environment:
+      MYSQL_DATABASE: lawn_care
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - backend
+# Volumes
+volumes:
+  db-data:
+
+# Networks to be created to facilitate communication between containers
+networks:
+  backend:
+    driver: bridge

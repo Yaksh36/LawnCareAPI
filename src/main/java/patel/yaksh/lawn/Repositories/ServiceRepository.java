@@ -12,19 +12,21 @@ import java.util.List;
 public interface ServiceRepository extends JpaRepository<ServiceRequest,Integer> {
 
 //    List<ServiceRequest> findAllByProviderIdEquals(int id);
-    List<ServiceRequest> findAllByisAcceptedIsFalse();
+   // List<ServiceRequest> findAllByisAcceptedIsFalseAndisCompletedIsFalse();
+
+    List<ServiceRequest> findAllByAcceptedIsFalseAndCompletedIsFalse();
 
     @Query(
                     "SELECT s " +
                     "FROM ServiceRequest s " +
-                    "left join User u on s.requesterId = u.id where u.city like :city and u.state like :state and s.isAccepted = false"
+                    "left join User u on s.requesterId = u.id where u.city like :city and u.state like :state and s.accepted = false and s.completed = false"
     )
     List<ServiceRequest> findByCityAndState(@Param("city") String city, @Param("state") String state);
 
     @Query(
             "SELECT s " +
                     "FROM ServiceRequest s " +
-                    "left join User u on s.requesterId = u.id where u.postal_code like :postal and s.isAccepted = false"
+                    "left join User u on s.requesterId = u.id where u.postal_code like :postal and s.accepted = false and s.completed = false "
     )
     List<ServiceRequest> findByPostalCode(@Param("postal") String postal_code);
 

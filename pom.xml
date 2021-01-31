@@ -13,12 +13,22 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>LawnCare</name>
     <description>Demo project for Spring Boot</description>
+    <packaging>war</packaging>
+
 
     <properties>
         <java.version>11</java.version>
+        <start-class>patel.yaksh.lawn.LawnCareApplication</start-class>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
