@@ -9,19 +9,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import patel.yaksh.lawn.Controller.UserController;
 
 @SpringBootApplication
-@EnableJpaRepositories
-@ComponentScan(basePackages = {"patel.yaksh.lawn.Controller","patel.yaksh.lawn.Service","patel.yaksh.lawn.Config"})
-public class LawnCareApplication extends SpringBootServletInitializer {
+public class LawnCareApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(LawnCareApplication.class, args);
-    }
-
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(LawnCareApplication.class);
     }
 
 }
