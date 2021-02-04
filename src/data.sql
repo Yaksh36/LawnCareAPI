@@ -1,1 +1,0 @@
-INSERT INTO lawn_care.user values
