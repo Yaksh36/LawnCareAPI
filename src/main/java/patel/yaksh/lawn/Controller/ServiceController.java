@@ -1,6 +1,8 @@
 package patel.yaksh.lawn.Controller;
 
+import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
@@ -10,6 +12,8 @@ import patel.yaksh.lawn.Model.ServiceNotFoundException;
 import patel.yaksh.lawn.Model.ServiceRequest;
 import patel.yaksh.lawn.Service.ServiceRequestService;
 
+import java.net.InetAddress;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -21,6 +25,31 @@ public class ServiceController {
 
     @Autowired
     private ServiceRequestService service;
+
+
+    @GetMapping("/server")
+    public HashMap<String,String> getServer(){
+        HashMap<String, String> map = new HashMap<>();
+        try {
+            // Local address
+            String localAddress = InetAddress.getLocalHost().getHostAddress();
+            String localName = InetAddress.getLocalHost().getHostName();
+
+            // Remote address
+            String remoteAddress = InetAddress.getLoopbackAddress().getHostAddress();
+            String remoteName = InetAddress.getLoopbackAddress().getHostName();
+
+            map.put("locAdd",localAddress);
+            map.put("locName",localName);
+            map.put("remAdd", remoteAddress);
+            map.put("remName",remoteName);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return map;
+    }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
@@ -62,7 +91,7 @@ public class ServiceController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{serviceId}/complete")
     public void markComplete(@PathVariable int serviceId){
-         service.markComplete(serviceId);
+        service.markComplete(serviceId);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
