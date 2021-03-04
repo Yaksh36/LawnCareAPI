@@ -43,6 +43,11 @@ services:
       - C:/Users/Yaksh Patel/Desktop/LawnCare/src/main/java/patel/yaksh/lawn/mysql:/var/lib/mysql
     command: mysqld
 
+  redis:
+    container_name: redis
+    image: redis
+    command: redis-server
+
   nginx:
     image: nginx:latest
     volumes:
