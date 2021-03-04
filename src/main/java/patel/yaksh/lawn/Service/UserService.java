@@ -1,18 +1,30 @@
 package patel.yaksh.lawn.Service;
 
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import patel.yaksh.lawn.Model.ServiceRequest;
+import patel.yaksh.lawn.Config.RabbitConfig;
 import patel.yaksh.lawn.Model.User;
 import patel.yaksh.lawn.Repositories.UserRepository;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class UserService {
+
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    public void sendPasswordMessage(Map<String,String> message) {
+        rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_FORGOT_PASSWORD, message);
+    }
 
     public PasswordEncoder PasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -63,6 +75,11 @@ public class UserService {
 
            if(user.getPassword() != null){
                temp.setPassword(user.getPassword());
+
+               Map<String,String> message = new HashMap<>();
+               message.put("email",user.getEmail());
+               message.put("body", "Your password has been successfully change to: " + user.getPassword());
+               sendPasswordMessage(message);
            }
 
            userRepository.save(temp);

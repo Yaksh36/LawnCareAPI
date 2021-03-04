@@ -10,10 +10,23 @@ services:
     restart: always
     depends_on:
       - db
+      - rabbitmq
     environment:
-      SPRING_DATASOURCE_URL: "jdbc:mysql://db:3306/lawn_care?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true"
+      SPRING_DATASOURCE_URL: "jdbc:mysql://db:3306/lawn_care?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=10"
       SPRING_DATASOURCE_USERNAME: "root"
       SPRING_DATASOURCE_PASSWORD: "root"
+      SPRING_RABBITMQ_HOST: rabbitmq
+
+  consumer-server:
+    image: consumer_server
+    build:
+      context: ./lawn_care_consumer
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - app-server
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
 
   db:
     container_name: db
@@ -27,8 +40,7 @@ services:
       MYSQL_PASSWORD: admin
       MYSQL_ROOT_PASSWORD: root
     volumes:
- #     - db-data:/var/lib/mysql
-      - ./data.sql:/docker.entrypoint-initdb.d
+      - C:/Users/Yaksh Patel/Desktop/LawnCare/src/main/java/patel/yaksh/lawn/mysql:/var/lib/mysql
     command: mysqld
 
   nginx:
@@ -40,6 +52,17 @@ services:
     ports:
       - "4000:4000"
 
+  rabbitmq:
+    image: library/rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+      - ./rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+
 # Volumes
 #volumes:
  # db-data:
+#  volumes:
+#    - C:\temp\MessageQueueExample\docker\rabbitmq\data:/var/lib/rabbitmq/mnesia

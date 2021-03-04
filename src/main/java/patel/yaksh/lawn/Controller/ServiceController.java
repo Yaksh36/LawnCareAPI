@@ -1,11 +1,8 @@
 package patel.yaksh.lawn.Controller;
 
-import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import patel.yaksh.lawn.Model.ServiceNotFoundException;
@@ -25,7 +22,6 @@ public class ServiceController {
 
     @Autowired
     private ServiceRequestService service;
-
 
     @GetMapping("/server")
     public HashMap<String,String> getServer(){
