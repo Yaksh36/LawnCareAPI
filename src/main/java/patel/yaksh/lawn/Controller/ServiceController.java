@@ -56,7 +56,7 @@ public class ServiceController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public ServiceRequest findById(@PathVariable int id){
-        ServiceRequest s = service.findById(id).orElse(null);
+        ServiceRequest s = service.findById(id);
         if (s!=null) {
             s.add(linkTo(methodOn(ServiceController.class).findById(id)).withSelfRel());
             s.add(linkTo(methodOn(ServiceController.class).findAllOpenRequests("", "", "")).withRel("allOpenRequests"));

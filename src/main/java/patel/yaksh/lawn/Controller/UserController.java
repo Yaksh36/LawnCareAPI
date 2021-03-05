@@ -10,7 +10,9 @@ import patel.yaksh.lawn.Model.UserNotFoundException;
 import patel.yaksh.lawn.Service.UserService;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 
 @RestController
@@ -23,6 +25,7 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private final static Logger logger = Logger.getLogger(UserController.class.getName());
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("")
@@ -32,15 +35,20 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("")
-    private Iterable<User> findAll(){
+    private List<User> findAll(){
+        logger.info("Grabbing all the users...");
+        List<User> users = userService.findAll();
+        logger.info("Grabbed " + users.size() + " users");
         return userService.findAll();
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     private User findById(@PathVariable int id){
+        logger.info("Grabbing user by id " + id);
         User user = userService.findById(id);
         if (user != null){
+            logger.info("Grabbed user " + user.getEmail());
             return user;
         }else {
             throw new UserNotFoundException();

@@ -3,6 +3,8 @@ package patel.yaksh.lawn.Service;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import patel.yaksh.lawn.Model.User;
 import patel.yaksh.lawn.Repositories.UserRepository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -30,6 +33,7 @@ public class UserService {
         return new BCryptPasswordEncoder();
     }
 
+    @CacheEvict(value = "users", allEntries = true)
     public void save(User user){
         if (!user.getPassword().startsWith("$2a")){
             user.setPassword(PasswordEncoder().encode(user.getPassword()));
@@ -37,18 +41,22 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Cacheable(value = "users", key = "#id")
     public User findById(int id){
         return userRepository.findById(id).orElse(null);
     }
 
+    @Cacheable(value = "users", key = "#email")
     public User findByEmail(String email){
         return userRepository.findByEmail(email);
     }
 
-    public Iterable<User> findAll(){
+    @Cacheable(value = "users")
+    public List<User> findAll(){
         return userRepository.findAll();
     }
 
+    @CacheEvict(value = "users", allEntries = true)
     public User patch(User user, int id){
        User temp =  userRepository.findById(id).orElse(null);
        if (temp != null){

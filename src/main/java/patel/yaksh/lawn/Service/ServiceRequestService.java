@@ -2,6 +2,8 @@ package patel.yaksh.lawn.Service;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import patel.yaksh.lawn.Config.RabbitConfig;
 import patel.yaksh.lawn.Model.ServiceNotFoundException;
@@ -9,6 +11,7 @@ import patel.yaksh.lawn.Model.ServiceRequest;
 import patel.yaksh.lawn.Model.User;
 import patel.yaksh.lawn.Repositories.ServiceRepository;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,11 +37,12 @@ public class ServiceRequestService {
         rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_SERVICE, message);
     }
 
-
-    public Optional<ServiceRequest> findById(int id){
-        return repository.findById(id);
+    @Cacheable(value = "requests", key = "#id")
+    public ServiceRequest findById(int id){
+        return repository.findById(id).orElse(null);
     }
 
+    @CacheEvict(value = "requests", allEntries = true)
     public void save(ServiceRequest serviceRequest){
         repository.save(serviceRequest);
         Map<String,String> message = new HashMap<>();
@@ -50,18 +54,22 @@ public class ServiceRequestService {
         }
     }
 
+    @Cacheable(value = "requests")
     public List<ServiceRequest> getOpenRequests(){
         return repository.findAllByAcceptedIsFalseAndCompletedIsFalse();
     }
 
+    @Cacheable(value = "requests")
     public List<ServiceRequest> getOpenRequestsByPostal(String postal){
         return repository.findByPostalCode(postal);
     }
 
+    @Cacheable(value = "requests")
     public List<ServiceRequest> getOpenRequestsByCityAndState(String city, String state){
         return repository.findByCityAndState(city, state);
     }
 
+    @CacheEvict(value = "requests", allEntries = true)
     public void markComplete(int serviceId){
         ServiceRequest serviceRequest = repository.findById(serviceId).orElse(null);
         if (serviceRequest != null){
@@ -89,6 +97,7 @@ public class ServiceRequestService {
         }
     }
 
+    @CacheEvict(value = "requests", allEntries = true)
     public void claimService(int serviceId, int providerId){
         ServiceRequest serviceRequest = repository.findById(serviceId).orElse(null);
         if (serviceRequest != null && serviceRequest.getProviderId() == -1) {
@@ -119,6 +128,7 @@ public class ServiceRequestService {
         }
     }
 
+    @CacheEvict(value = "requests", allEntries = true)
     public void delete(int id){
         repository.deleteById(id);
     }

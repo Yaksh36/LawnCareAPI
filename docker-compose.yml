@@ -16,6 +16,8 @@ services:
       SPRING_DATASOURCE_USERNAME: "root"
       SPRING_DATASOURCE_PASSWORD: "root"
       SPRING_RABBITMQ_HOST: rabbitmq
+      REDIS_HOST: redis
+      REDIS_PASSWORD: test
 
   consumer-server:
     image: consumer_server
@@ -44,9 +46,13 @@ services:
     command: mysqld
 
   redis:
-    container_name: redis
     image: redis
-    command: redis-server
+    command: redis-server --requirepass test
+    container_name: exercise-5-3-redis
+    volumes:
+      - ./redis/data:/data
+    ports:
+      - 6379:6379
 
   nginx:
     image: nginx:latest

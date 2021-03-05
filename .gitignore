@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+/src/main/java/patel/yaksh/lawn/mysql
+/rabbitmq
+/redis

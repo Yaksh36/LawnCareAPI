@@ -6,13 +6,14 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Time;
 
 @Entity
 @Data
 @NoArgsConstructor
-public class ServiceRequest extends RepresentationModel<ServiceRequest> {
+public class ServiceRequest extends RepresentationModel<ServiceRequest> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id;
